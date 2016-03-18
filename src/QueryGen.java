@@ -252,9 +252,8 @@ public class QueryGen {
             2. DISCOUNT is randomly selected within [0.02 .. 0.09];
             3. QUANTITY is randomly selected within [24 .. 25].*/
 
-        String arg1 = "199"+(rnd.nextInt(5)+3)+"-01-01" ;
-        String arg2= rnd.nextDouble();
-        String arg3 = "";
+        String arg1 = getRndRegion();
+        String arg2= "199"+(rnd.nextInt(5)+3)+"-01-01" ;
 
 
         return "select" +

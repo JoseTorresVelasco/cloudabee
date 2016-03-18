@@ -98,50 +98,9 @@ public class QueryGen {
         // arg1 must be an integer value between 60 and 120.
         int arg1 = 1 + rnd.nextInt(50);
 
-        String arg2="";
+        String arg2= getRndParttype();
 
-        int val = rnd.nextInt(5);
-
-        switch (val){
-            case 0:
-                arg2 = "TIN";
-                break;
-            case 1:
-                arg2 = "NICKEL";
-                break;
-            case 2:
-                arg2 = "BRASS";
-                break;
-            case 3:
-                arg2 = "STEEL";
-                break;
-            case 4:
-                arg2 = "COPPER";
-                break;
-        }
-
-
-        String arg3 = "";
-
-        val = rnd.nextInt(5);
-
-        switch (val){
-            case 0:
-                arg3 = "AFRICA";
-                break;
-            case 1:
-                arg3 = "AMERICA";
-                break;
-            case 2:
-                arg3 = "ASIA";
-                break;
-            case 3:
-                arg3 = "EUROPE";
-                break;
-            case 4:
-                arg3 = "MIDDLE EAST";
-                break;
-        }
+        String arg3 = getRndRegion();
 
         return "select\n" +
                 " s_acctbal," +
@@ -191,32 +150,9 @@ public class QueryGen {
     public String query3(){
 
         // arg1 must be an integer value between 60 and 120.
-        String arg1 = "";
-
-        int val = rnd.nextInt(5);
-
-        switch (val){
-            case 0:
-                arg1 = "AUTOMOBILE";
-                break;
-            case 1:
-                arg1 = "BUILDING";
-                break;
-            case 2:
-                arg1 = "FURNITURE";
-                break;
-            case 3:
-                arg1 = "MACHINERY";
-                break;
-            case 4:
-                arg1 = "HOUSEHOLD";
-                break;
-        }
+        String arg1 = getRndMtksegment();
 
         String arg2= "1995-03-" + (rnd.nextInt(32)+1);
-
-
-
 
         return " select" +
                 " l_orderkey," +
@@ -240,6 +176,179 @@ public class QueryGen {
                 " order by" +
                 " revenue desc," +
                 " o_orderdate;";
+    }
+
+
+
+    public String query4(){
+
+        /*  1.DATE (arg1) is the first day of a randomly selected month between the first month of 1993
+            and the 10th month of 1997.*/
+
+        String arg1= "199"+(rnd.nextInt(5)+3)+"-"+(rnd.nextInt(10)+1)+"-01" ;
+
+        return "select" +
+                " o_orderpriority," +
+                " count(*) as order_count" +
+                " from" +
+                " orders" +
+                " where" +
+                " o_orderdate >= date '"+arg1+"'" +
+                " and o_orderdate < date '"+arg1+"' + interval '3' month" +
+                " and exists (" +
+                " select" +
+                " *" +
+                " from" +
+                " lineitem" +
+                " where" +
+                " l_orderkey = o_orderkey" +
+                " and l_commitdate < l_receiptdate" +
+                " )" +
+                " group by" +
+                " o_orderpriority" +
+                " order by" +
+                " o_orderpriority;";
+    }
+
+    public String query5(){
+
+        /*  1. REGION (arg1) is randomly selected within the list of values defined for R_NAME;
+            2. DATE (arg2) is the first of January of a randomly selected year within [1993 .. 1997].*/
+
+        String arg1 = getRndRegion();
+        String arg2= "199"+(rnd.nextInt(5)+3)+"-01-01" ;
+
+
+        return "select" +
+                " n_name," +
+                " sum(l_extendedprice * (1 - l_discount)) as revenue" +
+                " from" +
+                " customer," +
+                " orders," +
+                " lineitem," +
+                " supplier," +
+                " nation," +
+                " region" +
+                " where" +
+                " c_custkey = o_custkey" +
+                " and l_orderkey = o_orderkey" +
+                " and l_suppkey = s_suppkey" +
+                " and c_nationkey = s_nationkey" +
+                " and s_nationkey = n_nationkey" +
+                " and n_regionkey = r_regionkey" +
+                " and r_name = '"+arg1+"'" +
+                " and o_orderdate >= date '"+arg2+"'" +
+                " and o_orderdate < date '"+arg2+"' + interval '1' year" +
+                " group by" +
+                " n_name" +
+                " order by" +
+                " revenue desc;";
+    }
+
+
+    public String query6(){
+
+        /*  1. DATE is the first of January of a randomly selected year within [1993 .. 1997];
+            2. DISCOUNT is randomly selected within [0.02 .. 0.09];
+            3. QUANTITY is randomly selected within [24 .. 25].*/
+
+        String arg1 = "199"+(rnd.nextInt(5)+3)+"-01-01" ;
+        String arg2= rnd.nextDouble();
+        String arg3 = "";
+
+
+        return "select" +
+                " sum(l_extendedprice*l_discount) as revenue" +
+                " from" +
+                " lineitem" +
+                " where" +
+                " l_shipdate >= date '[DATE]'" +
+                " and l_shipdate < date '[DATE]' + interval '1' year" +
+                " and l_discount between [DISCOUNT] - 0.01 and [DISCOUNT] + 0.01" +
+                " and l_quantity < [QUANTITY];";
+    }
+
+
+
+    private String getRndMtksegment() {
+
+        String result = "";
+
+        int val = rnd.nextInt(5);
+
+        switch (val){
+            case 0:
+                result = "AUTOMOBILE";
+                break;
+            case 1:
+                result = "BUILDING";
+                break;
+            case 2:
+                result = "FURNITURE";
+                break;
+            case 3:
+                result = "MACHINERY";
+                break;
+            case 4:
+                result = "HOUSEHOLD";
+                break;
+        }
+
+        return result;
+    }
+
+    public String getRndParttype(){
+
+        String result = "";
+
+        int val = rnd.nextInt(5);
+
+        switch (val){
+            case 0:
+                result = "TIN";
+                break;
+            case 1:
+                result = "NICKEL";
+                break;
+            case 2:
+                result = "BRASS";
+                break;
+            case 3:
+                result = "STEEL";
+                break;
+            case 4:
+                result = "COPPER";
+                break;
+        }
+
+        return result;
+    }
+
+    public String getRndRegion(){
+
+        String result = "";
+
+        int val = rnd.nextInt(5);
+
+        switch (val){
+            case 0:
+                result = "AFRICA";
+                break;
+            case 1:
+                result = "AMERICA";
+                break;
+            case 2:
+                result = "ASIA";
+                break;
+            case 3:
+                result = "EUROPE";
+                break;
+            case 4:
+                result = "MIDDLE EAST";
+                break;
+        }
+
+        return result;
     }
 
 }

@@ -248,12 +248,13 @@ public class QueryGen {
 
     public String query6(){
 
-        /*  1. DATE is the first of January of a randomly selected year within [1993 .. 1997];
-            2. DISCOUNT is randomly selected within [0.02 .. 0.09];
-            3. QUANTITY is randomly selected within [24 .. 25].*/
+        /*  1. DATE (arg1) is the first of January of a randomly selected year within [1993 .. 1997];
+            2. DISCOUNT (arg2) is randomly selected within [0.02 .. 0.09];
+            3. QUANTITY (arg3) is randomly selected within [24 .. 25].*/
 
-        String arg1 = getRndRegion();
-        String arg2= "199"+(rnd.nextInt(5)+3)+"-01-01" ;
+        String arg1 = "199"+(rnd.nextInt(5)+3)+"-01-01" ;
+        float arg2= (rnd.nextInt(7)+2)/100;
+        int arg3 = rnd.nextInt(2) + 24;
 
 
         return "select" +
@@ -261,10 +262,10 @@ public class QueryGen {
                 " from" +
                 " lineitem" +
                 " where" +
-                " l_shipdate >= date '[DATE]'" +
-                " and l_shipdate < date '[DATE]' + interval '1' year" +
-                " and l_discount between [DISCOUNT] - 0.01 and [DISCOUNT] + 0.01" +
-                " and l_quantity < [QUANTITY];";
+                " l_shipdate >= date '"+arg1+"'" +
+                " and l_shipdate < date '"+arg1+"' + interval '1' year" +
+                " and l_discount between "+arg2+" - 0.01 and "+arg2+" + 0.01" +
+                " and l_quantity < "+arg3+";";
     }
 
 

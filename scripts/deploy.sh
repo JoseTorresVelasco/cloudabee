@@ -33,6 +33,7 @@ echo "1. Checking if needed tools are available in the system.";
 checking_tool zip
 checking_tool gcc
 checking_tool make
+checking_tool mysql-server
 
 if [ -d $DIRECTORY ]; then
   echo "ERROR: $DIRECTORY exists. You should delete it to continue.";
@@ -70,7 +71,6 @@ sudo mv DATA /var/lib/mysql/
 ##Instalación de mysql.
 sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password password jose123'
 sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password jose123'
-sudo apt-get -y install mysql-server
 
 ##Una vez instalado el servidor, se levanta y se crea un usuario para la BD y la propia BD
 sudo service mysql start

@@ -268,9 +268,276 @@ public class QueryGen {
                 " and l_quantity < "+arg3+";";
     }
 
+    public String query7(){
+
+        /*  1. NATION1 (arg1) is randomly selected within the list of values defined for N_NAME;
+            2. NATION2 (arg2) is randomly selected within the list of values defined*/
+
+        String arg1 = getRndNation() ;
+        String arg2= getRndNation();
 
 
-    private String getRndMtksegment() {
+        return " select" +
+                " supp_nation," +
+                " cust_nation," +
+                " l_year, sum(volume) as revenue" +
+                " from (" +
+                " select" +
+                " n1.n_name as supp_nation," +
+                " n2.n_name as cust_nation," +
+                " extract(year from l_shipdate) as l_year," +
+                " l_extendedprice * (1 - l_discount) as volume" +
+                " from" +
+                " supplier," +
+                " lineitem," +
+                " orders," +
+                " customer," +
+                " nation n1," +
+                " nation n2" +
+                " where" +
+                " s_suppkey = l_suppkey" +
+                " and o_orderkey = l_orderkey" +
+                " and c_custkey = o_custkey" +
+                " and s_nationkey = n1.n_nationkey" +
+                " and c_nationkey = n2.n_nationkey" +
+                " and (" +
+                " (n1.n_name = '"+arg1+"' and n2.n_name = '"+arg2+"')" +
+                " or (n1.n_name = '"+arg2+"' and n2.n_name = '"+arg1+"')" +
+                " )" +
+                " and l_shipdate between date '1995-01-01' and date '1996-12-31'" +
+                " ) as shipping" +
+                " group by" +
+                " supp_nation," +
+                " cust_nation," +
+                " l_year" +
+                " order by" +
+                " supp_nation," +
+                " cust_nation," +
+                " l_year;";
+    }
+
+    public String query8(){
+
+        /*  1. NATION (arg1) is randomly selected within the list of values defined for N_NAME;
+            2. REGION (arg2) is the value defined  for R_NAME where R_REGIONKEY corresponds to
+               N_REGIONKEY for the selected NATION in item 1 above;
+            3. TYPE (arg3) is randomly selected within the list of 3-syllable strings defined for Types*/
+
+        String arg1 = getRndNation() ;
+        String arg2= getRegionByNation(arg1);
+        String arg3 = getRndParttype();
+
+
+        return "select" +
+                " o_year," +
+                " sum(case" +
+                " when nation = '"+arg1+"'" +
+                " then volume" +
+                " else 0" +
+                " end) / sum(volume) as mkt_share" +
+                " from (" +
+                " select" +
+                " extract(year from o_orderdate) as o_year," +
+                " l_extendedprice * (1-l_discount) as volume," +
+                " n2.n_name as nation" +
+                " from" +
+                " part," +
+                " supplier," +
+                " lineitem," +
+                " orders," +
+                " customer," +
+                " nation n1," +
+                " nation n2," +
+                " region" +
+                " where" +
+                " p_partkey = l_partkey" +
+                " and s_suppkey = l_suppkey" +
+                " and l_orderkey = o_orderkey" +
+                " and o_custkey = c_custkey" +
+                " and c_nationkey = n1.n_nationkey" +
+                " and n1.n_regionkey = r_regionkey" +
+                " and r_name = '"+arg2+"'" +
+                " and s_nationkey = n2.n_nationkey" +
+                " and o_orderdate between date '1995-01-01' and date '1996-12-31'" +
+                " and p_type = '"+arg3+"'" +
+                " ) as all_nations" +
+                " group by" +
+                " o_year" +
+                " order by" +
+                " o_year;";
+    }
+
+    public String query9(){
+
+        /*  1. COLOR (arg1)is randomly selected within the list of values defined for the generation of P_NAME  */
+
+        String arg1 = getRndColor() ;
+
+
+        return "select" +
+                "nation," +
+                "o_year," +
+                "sum(amount) as sum_profit" +
+                "from (" +
+                "select" +
+                "n_name as nation," +
+                "extract(year from o_orderdate) as o_year," +
+                "l_extendedprice * (1 - l_discount) - ps_supplycost * l_quantity as amount" +
+                "from" +
+                "part," +
+                "supplier," +
+                "lineitem," +
+                "partsupp," +
+                "orders," +
+                "nation" +
+                "where" +
+                "s_suppkey = l_suppkey" +
+                "and ps_suppkey = l_suppkey" +
+                "and ps_partkey = l_partkey" +
+                "and p_partkey = l_partkey" +
+                "and o_orderkey = l_orderkey" +
+                "and s_nationkey = n_nationkey" +
+                "and p_name like '%"+arg1+"%'" +
+                ") as profit" +
+                "group by" +
+                "nation," +
+                "o_year" +
+                "order by" +
+                "nation," +
+                "o_year desc;";
+    }
+
+    public String getRndColor(){
+
+        String [] colors = {"almond", "antique", "aquamarine", "azure", "beige",
+                "bisque", "black", "blanched", "blue","blush", "brown", "burlywood",
+                "burnished", "chartreuse", "chiffon", "chocolate", "coral",
+                "cornflower", "cornsilk", "cream", "cyan", "dark", "deep", "dim",
+                "dodger", "drab", "firebrick", "floral", "forest", "frosted",
+                "gainsboro", "ghost", "goldenrod", "green", "grey", "honeydew",
+                "hot", "indian", "ivory", "khaki", "lace", "lavender", "lawn",
+                "lemon", "light", "lime", "linen", "magenta", "maroon", "medium",
+                "metallic", "midnight", "mint", "misty", "moccasin", "navajo",
+                "navy", "olive", "orange", "orchid", "pale", "papaya", "peach",
+                "peru", "pink", "plum", "powder", "puff", "purple", "red", "rose",
+                "rosy", "royal", "saddle", "salmon", "sandy", "seashell", "sienna",
+                "sky", "slate", "smoke", "snow", "spring", "steel", "tan", "thistle",
+                "tomato", "turquoise", "violet", "wheat", "white", "yellow"};
+
+        int val = rnd.nextInt(colors.length);
+
+        return colors[val];
+    }
+
+
+    public String getRegionByNation(String arg1) {
+
+        String result = "";
+
+        if(arg1.equals("ALGERIA") || arg1.equals("ETHIOPIA") || arg1.equals("KENYA")
+                || arg1.equals("MOROCCO") || arg1.equals("MOZAMBIQUE")){
+            result = "AFRICA";
+        }else if(arg1.equals("ARGENTINA") || arg1.equals("BRAZIL") || arg1.equals("CANADA")
+                || arg1.equals("PERU") || arg1.equals("UNITED STATES")){
+            result = "AMERICA";
+        }else if(arg1.equals("INDIA") || arg1.equals("INDONESIA") || arg1.equals("JAPAN")
+                || arg1.equals("CHINA") || arg1.equals("VIETNAM")){
+            result = "ASIA";
+        }else if(arg1.equals("FRANCE") || arg1.equals("GERMANY") || arg1.equals("ROMANIA")
+                || arg1.equals("RUSSIA") || arg1.equals("UNITED KINGDOM")){
+            result = "EUROPE";
+        }else{
+            result = "MIDDLE EAST";
+        }
+
+        return result;
+    }
+
+    public String getRndNation() {
+
+        String result = "";
+
+        int val = rnd.nextInt(24);
+
+        switch (val){
+            case 0:
+                result = "ALGERIA";
+                break;
+            case 1:
+                result = "ARGENTINA";
+                break;
+            case 2:
+                result = "BRAZIL";
+                break;
+            case 3:
+                result = "CANADA";
+                break;
+            case 4:
+                result = "EGYPT";
+                break;
+            case 5:
+                result = "FRANCE";
+                break;
+            case 6:
+                result = "GERMANY";
+                break;
+            case 7:
+                result = "INDIA";
+                break;
+            case 8:
+                result = "INDONESIA";
+                break;
+            case 9:
+                result = "IRAN";
+                break;
+            case 10:
+                result = "IRAQ";
+                break;
+            case 11:
+                result = "JAPAN";
+                break;
+            case 12:
+                result = "JORDAN";
+                break;
+            case 13:
+                result = "KENYA";
+                break;
+            case 14:
+                result = "MOROCCO";
+                break;
+            case 15:
+                result = "MOZAMBIQUE";
+                break;
+            case 16:
+                result = "PERU";
+                break;
+            case 17:
+                result = "CHINA";
+                break;
+            case 18:
+                result = "ROMANIA";
+                break;
+            case 19:
+                result = "SAUDI ARABIA";
+                break;
+            case 20:
+                result = "VIETNAM";
+                break;
+            case 21:
+                result = "RUSSIA";
+                break;
+            case 22:
+                result = "UNITED KINGDOM";
+                break;
+            case 23:
+                result = "UNITED STATES";
+                break;
+        }
+
+        return result;
+    }
+
+    public String getRndMtksegment() {
 
         String result = "";
 

@@ -1,6 +1,8 @@
 import java.sql.*;
 import java.util.Random;
 
+enum QueryExecutionMode {SELECT, UPDATE}
+
 public class QueryGen {
 
     static final String STARTDATE = "1992-01-01";
@@ -21,13 +23,13 @@ public class QueryGen {
     }
 
 
-    public boolean executeQuery(String query, int mode){
+    public boolean executeQuery(String query, QueryExecutionMode mode){
         try {
 
             System.out.println(query);
 
             Statement stm = getConnection().createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
-            if(mode == 0) {
+            if(mode == QueryExecutionMode.SELECT) {
                 ResultSet rs = stm.executeQuery(query);
 
                 System.out.println(rs.getFetchSize() + " row(s) returned");
@@ -70,12 +72,12 @@ public class QueryGen {
         this.connection = connection;
     }
 
-    public String query1(){
+    public void query1(){
 
         // arg1 must be an integer value between 60 and 120.
         int arg1 = 60 + rnd.nextInt(60);
 
-        return "select " +
+        String query = "select " +
                 " l_returnflag," +
                 " l_linestatus," +
                 " sum(l_quantity) as sum_qty," +
@@ -96,11 +98,13 @@ public class QueryGen {
                 " order by" +
                 " l_returnflag," +
                 " l_linestatus;";
+
+        executeQuery(query,QueryExecutionMode.SELECT);
     }
 
 
 
-    public String query2(){
+    public void query2(){
 
         // arg1 must be an integer value between 60 and 120.
         int arg1 = 1 + rnd.nextInt(50);
@@ -109,7 +113,7 @@ public class QueryGen {
 
         String arg3 = getRndRegion();
 
-        return "select\n" +
+        String query = "select\n" +
                 " s_acctbal," +
                 " s_name," +
                 " n_name," +
@@ -152,16 +156,18 @@ public class QueryGen {
                 " n_name," +
                 " s_name," +
                 " p_partkey;";
+
+        executeQuery(query,QueryExecutionMode.SELECT);
     }
 
-    public String query3(){
+    public void query3(){
 
         // arg1 must be an integer value between 60 and 120.
         String arg1 = getRndMtksegment();
 
         String arg2= "1995-03-" + (rnd.nextInt(32)+1);
 
-        return " select" +
+        String query =  " select" +
                 " l_orderkey," +
                 " sum(l_extendedprice*(1-l_discount)) as revenue," +
                 " o_orderdate," +
@@ -183,18 +189,21 @@ public class QueryGen {
                 " order by" +
                 " revenue desc," +
                 " o_orderdate;";
+
+        executeQuery(query,QueryExecutionMode.SELECT);
+
     }
 
 
 
-    public String query4(){
+    public void query4(){
 
         /*  1.DATE (arg1) is the first day of a randomly selected month between the first month of 1993
             and the 10th month of 1997.*/
 
         String arg1= "199"+(rnd.nextInt(5)+3)+"-"+(rnd.nextInt(10)+1)+"-01" ;
 
-        return "select" +
+        String query = "select" +
                 " o_orderpriority," +
                 " count(*) as order_count" +
                 " from" +
@@ -215,9 +224,12 @@ public class QueryGen {
                 " o_orderpriority" +
                 " order by" +
                 " o_orderpriority;";
+
+        executeQuery(query,QueryExecutionMode.SELECT);
+
     }
 
-    public String query5(){
+    public void query5(){
 
         /*  1. REGION (arg1) is randomly selected within the list of values defined for R_NAME;
             2. DATE (arg2) is the first of January of a randomly selected year within [1993 .. 1997].*/
@@ -226,7 +238,7 @@ public class QueryGen {
         String arg2= "199"+(rnd.nextInt(5)+3)+"-01-01" ;
 
 
-        return "select" +
+        String query = "select" +
                 " n_name," +
                 " sum(l_extendedprice * (1 - l_discount)) as revenue" +
                 " from" +
@@ -250,10 +262,12 @@ public class QueryGen {
                 " n_name" +
                 " order by" +
                 " revenue desc;";
+
+        executeQuery(query,QueryExecutionMode.SELECT);
     }
 
 
-    public String query6(){
+    public void query6(){
 
         /*  1. DATE (arg1) is the first of January of a randomly selected year within [1993 .. 1997];
             2. DISCOUNT (arg2) is randomly selected within [0.02 .. 0.09];
@@ -264,7 +278,7 @@ public class QueryGen {
         int arg3 = rnd.nextInt(2) + 24;
 
 
-        return "select" +
+        String query = "select" +
                 " sum(l_extendedprice*l_discount) as revenue" +
                 " from" +
                 " lineitem" +
@@ -273,9 +287,12 @@ public class QueryGen {
                 " and l_shipdate < date '"+arg1+"' + interval '1' year" +
                 " and l_discount between "+arg2+" - 0.01 and "+arg2+" + 0.01" +
                 " and l_quantity < "+arg3+";";
+
+        executeQuery(query,QueryExecutionMode.SELECT);
+
     }
 
-    public String query7(){
+    public void query7(){
 
         /*  1. NATION1 (arg1) is randomly selected within the list of values defined for N_NAME;
             2. NATION2 (arg2) is randomly selected within the list of values defined*/
@@ -284,7 +301,7 @@ public class QueryGen {
         String arg2= getRndNation();
 
 
-        return " select" +
+        String query = " select" +
                 " supp_nation," +
                 " cust_nation," +
                 " l_year, sum(volume) as revenue" +
@@ -321,9 +338,12 @@ public class QueryGen {
                 " supp_nation," +
                 " cust_nation," +
                 " l_year;";
+
+        executeQuery(query,QueryExecutionMode.SELECT);
+
     }
 
-    public String query8(){
+    public void query8(){
 
         /*  1. NATION (arg1) is randomly selected within the list of values defined for N_NAME;
             2. REGION (arg2) is the value defined  for R_NAME where R_REGIONKEY corresponds to
@@ -335,7 +355,7 @@ public class QueryGen {
         String arg3 = getRndParttype();
 
 
-        return "select" +
+        String query = "select" +
                 " o_year," +
                 " sum(case" +
                 " when nation = '"+arg1+"'" +
@@ -372,16 +392,19 @@ public class QueryGen {
                 " o_year" +
                 " order by" +
                 " o_year;";
+
+        executeQuery(query,QueryExecutionMode.SELECT);
+
     }
 
-    public String query9(){
+    public void query9(){
 
         /*  1. COLOR (arg1)is randomly selected within the list of values defined for the generation of P_NAME  */
 
         String arg1 = getRndColor() ;
 
 
-        return "select" +
+        String query = "select" +
                 " nation," +
                 " o_year," +
                 " sum(amount) as sum_profit" +
@@ -412,9 +435,12 @@ public class QueryGen {
                 " order by" +
                 " nation," +
                 " o_year desc;";
+
+        executeQuery(query,QueryExecutionMode.SELECT);
+
     }
 
-    public String query10(){
+    public void query10(){
 
         /*  1.  DATE (arg1) is the first day of a randomly selected month from the
                 second month of 1993 to the first month of 1995.*/
@@ -439,7 +465,7 @@ public class QueryGen {
             arg1 = "199"+year+"-0"+month+"-01" ;
         }
 
-        return "select" +
+        String query = "select" +
                 " c_custkey," +
                 " c_name," +
                 " sum(l_extendedprice * (1 - l_discount)) as revenue," +
@@ -470,10 +496,13 @@ public class QueryGen {
                 " c_comment" +
                 " order by" +
                 " revenue desc;";
+
+        executeQuery(query,QueryExecutionMode.SELECT);
+
     }
 
 
-    public String query11(){
+    public void query11(){
 
         /*  1. NATION is randomly selected within the list of values defined for N_NAME;
             2. FRACTION is chosen as 0.0001 / SF.*/
@@ -482,7 +511,7 @@ public class QueryGen {
         double arg2= 0.0001/SCALE_FACTOR;
 
 
-        return "select" +
+        String query = "select" +
                 " ps_partkey," +
                 " sum(ps_supplycost * ps_availqty) as value" +
                 " from" +
@@ -509,9 +538,11 @@ public class QueryGen {
                 " )" +
                 " order by" +
                 " value desc;";
+        executeQuery(query,QueryExecutionMode.SELECT);
+
     }
 
-    public String query12(){
+    public void query12(){
 
         /*  1.  SHIPMODE1 (arg1) is randomly selected within the list of values defined for Modes.;
             2.  SHIPMODE2 (arg2) is randomly selected within the list of values defined for Modes and must be
@@ -526,7 +557,7 @@ public class QueryGen {
         String arg3 = "199"+(rnd.nextInt(5)+3)+"-01-01" ;
 
 
-        return "select" +
+        String query = "select" +
                 " l_shipmode," +
                 " sum(case" +
                 " when o_orderpriority ='1-URGENT'" +
@@ -554,9 +585,12 @@ public class QueryGen {
                 " l_shipmode" +
                 " order by" +
                 " l_shipmode;";
+
+        executeQuery(query,QueryExecutionMode.SELECT);
+
     }
 
-    public String query13(){
+    public void query13(){
 
         /*  1. WORD1 is randomly selected from 4 possible values: special, pending, unusual, express.
             2. WORD2 is randomly selected from 4 possible values: packages, requests, accounts, deposits.*/
@@ -569,7 +603,7 @@ public class QueryGen {
         String arg2= words2[rnd.nextInt(words2.length)];
 
 
-        return "select" +
+        String query = "select" +
                 " c_count, count(*) as custdist" +
                 " from (" +
                 " select" +
@@ -587,16 +621,19 @@ public class QueryGen {
                 " order by" +
                 " custdist desc," +
                 " c_count desc;";
+
+        executeQuery(query,QueryExecutionMode.SELECT);
+
     }
 
-    public String query14(){
+    public void query14(){
 
         /*  1.  DATE (arg1) is the first day of a month randomly selected from a random year within [1993 .. 1997].*/
 
         String arg1 = "199"+(rnd.nextInt(5)+3)+"-01-01" ;
 
 
-        return "select" +
+        String query = "select" +
                 " 100.00 * sum(case" +
                 " when p_type like 'PROMO%'" +
                 " then l_extendedprice*(1-l_discount)" +
@@ -609,10 +646,12 @@ public class QueryGen {
                 " l_partkey = p_partkey" +
                 " and l_shipdate >= date '"+arg1+"'" +
                 " and l_shipdate < date '"+arg1+"' + interval '1' month;";
+
+        executeQuery(query,QueryExecutionMode.SELECT);
+
     }
 
-    //TODO: May be run without using executeQuery
-    public String query15(){
+    public void query15(){
 
         /*  1.  DATE (arg1) is the first day of a randomly selected month between
                 the first month of 1993 and the 10th month of 1997.*/
@@ -640,7 +679,8 @@ public class QueryGen {
                 " l_shipdate >= date '"+arg1+"'" +
                 " and l_shipdate < date '"+arg1+"' + interval '3' month" +
                 " group by" +
-                " l_suppkey;",1);
+                " l_suppkey;", QueryExecutionMode.UPDATE);
+
         executeQuery(" select" +
                 " s_suppkey," +
                 " s_name," +
@@ -659,44 +699,13 @@ public class QueryGen {
                 " revenue"+streamId+"" +
                 " )" +
                 " order by" +
-                " s_suppkey;",0);
+                " s_suppkey;", QueryExecutionMode.SELECT);
 
-        executeQuery( " drop view revenue"+streamId+";",1);
+        executeQuery( " drop view revenue"+streamId+";",QueryExecutionMode.UPDATE);
 
-        return " create view revenue"+streamId+" (supplier_no, total_revenue) as" +
-                " select" +
-                " l_suppkey," +
-                " sum(l_extendedprice * (1 - l_discount))" +
-                " from" +
-                " lineitem" +
-                " where" +
-                " l_shipdate >= date '"+arg1+"'" +
-                " and l_shipdate < date '"+arg1+"' + interval '3' month" +
-                " group by" +
-                " l_suppkey;" +
-                " select" +
-                " s_suppkey," +
-                " s_name," +
-                " s_address," +
-                " s_phone," +
-                " total_revenue" +
-                " from" +
-                " supplier," +
-                " revenue"+streamId+
-                " where" +
-                " s_suppkey = supplier_no" +
-                " and total_revenue = (" +
-                " select" +
-                " max(total_revenue)" +
-                " from" +
-                " revenue"+streamId+"" +
-                " )" +
-                " order by" +
-                " s_suppkey;" +
-                " drop view revenue"+streamId+";";
     }
 
-    public String query16(){
+    public void query16(){
 
         /*  1.  BRAND (arg1) = Brand#MN where M and N are two single character strings representing two numbers randomly and
                 independently selected within [1 .. 5];
@@ -723,7 +732,7 @@ public class QueryGen {
         int arg10 = (rnd.nextInt(50)+1);
 
 
-        return "select" +
+        String query = "select" +
                 " p_brand," +
                 " p_type," +
                 " p_size," +
@@ -753,6 +762,9 @@ public class QueryGen {
                 " p_brand," +
                 " p_type," +
                 " p_size;";
+
+        executeQuery(query,QueryExecutionMode.SELECT);
+
     }
 
     public String query17(){
@@ -763,24 +775,61 @@ public class QueryGen {
                 for Containers.*/
 
         String arg1 = "Brand#"+(rnd.nextInt(5)+1)+(rnd.nextInt(5)+1);
-        //TODO: Terminar argumentos
+        String arg2 = getRndContainer();
 
-        return "select\n" +
-                "sum(l_extendedprice) / 7.0 as avg_yearly\n" +
-                "from\n" +
-                "lineitem,\n" +
-                "part\n" +
-                "where\n" +
-                "p_partkey = l_partkey\n" +
-                "and p_brand = '[BRAND]'\n" +
-                "and p_container = '[CONTAINER]'\n" +
-                "and l_quantity < (\n" +
-                "select\n" +
-                "0.2 * avg(l_quantity)\n" +
-                "from\n" +
-                "lineitem\n" +
-                "where\n" +
-                "l_partkey = p_partkey";
+        return "select" +
+                " sum(l_extendedprice) / 7.0 as avg_yearly" +
+                " from" +
+                " lineitem," +
+                " part" +
+                " where" +
+                " p_partkey = l_partkey" +
+                " and p_brand = '"+arg1+"'" +
+                " and p_container = '"+arg2+"'" +
+                " and l_quantity < (" +
+                " select" +
+                " 0.2 * avg(l_quantity)" +
+                " from" +
+                " lineitem" +
+                " where" +
+                " l_partkey = p_partkey";
+    }
+
+    public void query18(){
+
+        /*  */
+
+        String arg1 = "199"+(rnd.nextInt(5)+3)+"-01-01" ;
+
+
+        String query = "select" +
+                " 100.00 * sum(case" +
+                " when p_type like 'PROMO%'" +
+                " then l_extendedprice*(1-l_discount)" +
+                " else 0" +
+                " end) / sum(l_extendedprice * (1 - l_discount)) as promo_revenue" +
+                " from" +
+                " lineitem," +
+                " part" +
+                " where" +
+                " l_partkey = p_partkey" +
+                " and l_shipdate >= date '"+arg1+"'" +
+                " and l_shipdate < date '"+arg1+"' + interval '1' month;";
+
+        executeQuery(query,QueryExecutionMode.SELECT);
+
+    }
+
+    private String getRndContainer() {
+
+        String result;
+
+        String [] syllabe1 = {"SM", "LG", "MED", "JUMBO", "WRAP"};
+        String [] syllabe2 = {"CASE", "BOX", "BAG", "JAR", "PKG", "PACK", "CAN", "DRUM"};
+
+        result = syllabe1[rnd.nextInt(syllabe1.length)] + " " + syllabe2[rnd.nextInt(syllabe2.length)];
+
+        return result;
     }
 
     public String getRndShipMode(){

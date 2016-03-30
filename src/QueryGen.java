@@ -26,13 +26,11 @@ public class QueryGen {
     public boolean executeQuery(String query, QueryExecutionMode mode){
         try {
 
-            System.out.println(query);
-
             Statement stm = getConnection().createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
             if(mode == QueryExecutionMode.SELECT) {
                 ResultSet rs = stm.executeQuery(query);
 
-                System.out.println(rs.getFetchSize() + " row(s) returned");
+                //System.out.println(rs.getFetchSize() + " row(s) returned");
                 //TODO: Print row returned don't works
             }else{
                 stm.execute(query);
@@ -44,7 +42,6 @@ public class QueryGen {
         }
 
         //TODO: Write execution time.
-
 
         return true;
     }
@@ -72,7 +69,7 @@ public class QueryGen {
         this.connection = connection;
     }
 
-    public void query1(){
+    public long query1(){
 
         // arg1 must be an integer value between 60 and 120.
         int arg1 = 60 + rnd.nextInt(60);
@@ -99,12 +96,14 @@ public class QueryGen {
                 " l_returnflag," +
                 " l_linestatus;";
 
+        long start_time = System.currentTimeMillis();
         executeQuery(query,QueryExecutionMode.SELECT);
+        return System.currentTimeMillis()-start_time;
     }
 
 
 
-    public void query2(){
+    public long query2(){
 
         // arg1 must be an integer value between 60 and 120.
         int arg1 = 1 + rnd.nextInt(50);
@@ -156,11 +155,12 @@ public class QueryGen {
                 " n_name," +
                 " s_name," +
                 " p_partkey;";
-
+        long start_time = System.currentTimeMillis();
         executeQuery(query,QueryExecutionMode.SELECT);
+        return System.currentTimeMillis()-start_time;
     }
 
-    public void query3(){
+    public long query3(){
 
         // arg1 must be an integer value between 60 and 120.
         String arg1 = getRndMtksegment();
@@ -190,13 +190,14 @@ public class QueryGen {
                 " revenue desc," +
                 " o_orderdate;";
 
+        long start_time = System.currentTimeMillis();
         executeQuery(query,QueryExecutionMode.SELECT);
-
+        return System.currentTimeMillis()-start_time;
     }
 
 
 
-    public void query4(){
+    public long query4(){
 
         /*  1.DATE (arg1) is the first day of a randomly selected month between the first month of 1993
             and the 10th month of 1997.*/
@@ -225,11 +226,12 @@ public class QueryGen {
                 " order by" +
                 " o_orderpriority;";
 
+        long start_time = System.currentTimeMillis();
         executeQuery(query,QueryExecutionMode.SELECT);
-
+        return System.currentTimeMillis()-start_time;
     }
 
-    public void query5(){
+    public long query5(){
 
         /*  1. REGION (arg1) is randomly selected within the list of values defined for R_NAME;
             2. DATE (arg2) is the first of January of a randomly selected year within [1993 .. 1997].*/
@@ -262,12 +264,14 @@ public class QueryGen {
                 " n_name" +
                 " order by" +
                 " revenue desc;";
-
+        long start_time = System.currentTimeMillis();
         executeQuery(query,QueryExecutionMode.SELECT);
+        return System.currentTimeMillis()-start_time;
+
     }
 
 
-    public void query6(){
+    public long query6(){
 
         /*  1. DATE (arg1) is the first of January of a randomly selected year within [1993 .. 1997];
             2. DISCOUNT (arg2) is randomly selected within [0.02 .. 0.09];
@@ -288,11 +292,13 @@ public class QueryGen {
                 " and l_discount between "+arg2+" - 0.01 and "+arg2+" + 0.01" +
                 " and l_quantity < "+arg3+";";
 
+        long start_time = System.currentTimeMillis();
         executeQuery(query,QueryExecutionMode.SELECT);
+        return System.currentTimeMillis()-start_time;
 
     }
 
-    public void query7(){
+    public long query7(){
 
         /*  1. NATION1 (arg1) is randomly selected within the list of values defined for N_NAME;
             2. NATION2 (arg2) is randomly selected within the list of values defined*/
@@ -339,11 +345,13 @@ public class QueryGen {
                 " cust_nation," +
                 " l_year;";
 
+        long start_time = System.currentTimeMillis();
         executeQuery(query,QueryExecutionMode.SELECT);
+        return System.currentTimeMillis()-start_time;
 
     }
 
-    public void query8(){
+    public long query8(){
 
         /*  1. NATION (arg1) is randomly selected within the list of values defined for N_NAME;
             2. REGION (arg2) is the value defined  for R_NAME where R_REGIONKEY corresponds to
@@ -393,11 +401,13 @@ public class QueryGen {
                 " order by" +
                 " o_year;";
 
+        long start_time = System.currentTimeMillis();
         executeQuery(query,QueryExecutionMode.SELECT);
+        return System.currentTimeMillis()-start_time;
 
     }
 
-    public void query9(){
+    public long query9(){
 
         /*  1. COLOR (arg1)is randomly selected within the list of values defined for the generation of P_NAME  */
 
@@ -435,12 +445,13 @@ public class QueryGen {
                 " order by" +
                 " nation," +
                 " o_year desc;";
-
+        long start_time = System.currentTimeMillis();
         executeQuery(query,QueryExecutionMode.SELECT);
+        return System.currentTimeMillis()-start_time;
 
     }
 
-    public void query10(){
+    public long query10(){
 
         /*  1.  DATE (arg1) is the first day of a randomly selected month from the
                 second month of 1993 to the first month of 1995.*/
@@ -496,13 +507,14 @@ public class QueryGen {
                 " c_comment" +
                 " order by" +
                 " revenue desc;";
-
+        long start_time = System.currentTimeMillis();
         executeQuery(query,QueryExecutionMode.SELECT);
+        return System.currentTimeMillis()-start_time;
 
     }
 
 
-    public void query11(){
+    public long query11(){
 
         /*  1. NATION is randomly selected within the list of values defined for N_NAME;
             2. FRACTION is chosen as 0.0001 / SF.*/
@@ -538,11 +550,14 @@ public class QueryGen {
                 " )" +
                 " order by" +
                 " value desc;";
+
+        long start_time = System.currentTimeMillis();
         executeQuery(query,QueryExecutionMode.SELECT);
+        return System.currentTimeMillis()-start_time;
 
     }
 
-    public void query12(){
+    public long query12(){
 
         /*  1.  SHIPMODE1 (arg1) is randomly selected within the list of values defined for Modes.;
             2.  SHIPMODE2 (arg2) is randomly selected within the list of values defined for Modes and must be
@@ -586,11 +601,13 @@ public class QueryGen {
                 " order by" +
                 " l_shipmode;";
 
+        long start_time = System.currentTimeMillis();
         executeQuery(query,QueryExecutionMode.SELECT);
+        return System.currentTimeMillis()-start_time;
 
     }
 
-    public void query13(){
+    public long query13(){
 
         /*  1. WORD1 is randomly selected from 4 possible values: special, pending, unusual, express.
             2. WORD2 is randomly selected from 4 possible values: packages, requests, accounts, deposits.*/
@@ -612,7 +629,7 @@ public class QueryGen {
                 " from" +
                 " customer left outer join orders on" +
                 " c_custkey = o_custkey" +
-                " and o_comment not like ‘%"+arg1+"%"+arg2+"%’" +
+                " and o_comment not like '%"+arg1+"%"+arg2+"%'" +
                 " group by" +
                 " c_custkey" +
                 " )as c_orders (c_custkey, c_count)" +
@@ -622,11 +639,15 @@ public class QueryGen {
                 " custdist desc," +
                 " c_count desc;";
 
+        System.out.println(query);
+
+        long start_time = System.currentTimeMillis();
         executeQuery(query,QueryExecutionMode.SELECT);
+        return System.currentTimeMillis()-start_time;
 
     }
 
-    public void query14(){
+    public long query14(){
 
         /*  1.  DATE (arg1) is the first day of a month randomly selected from a random year within [1993 .. 1997].*/
 
@@ -647,11 +668,15 @@ public class QueryGen {
                 " and l_shipdate >= date '"+arg1+"'" +
                 " and l_shipdate < date '"+arg1+"' + interval '1' month;";
 
+        long start_time = System.currentTimeMillis();
         executeQuery(query,QueryExecutionMode.SELECT);
+        return System.currentTimeMillis()-start_time;
 
     }
 
-    public void query15(){
+    public long query15(){
+
+        long time = 0;
 
         /*  1.  DATE (arg1) is the first day of a randomly selected month between
                 the first month of 1993 and the 10th month of 1997.*/
@@ -667,7 +692,9 @@ public class QueryGen {
 
         String arg1 = "199"+year+"-"+month+"-01" ;
 
-        int streamId = rnd.nextInt();
+        int streamId = rnd.nextInt(200);
+
+        long start_time = System.currentTimeMillis();
 
         executeQuery(" create view revenue"+streamId+" (supplier_no, total_revenue) as" +
                 " select" +
@@ -680,6 +707,10 @@ public class QueryGen {
                 " and l_shipdate < date '"+arg1+"' + interval '3' month" +
                 " group by" +
                 " l_suppkey;", QueryExecutionMode.UPDATE);
+
+        time += System.currentTimeMillis() - start_time;
+
+        start_time = System.currentTimeMillis();
 
         executeQuery(" select" +
                 " s_suppkey," +
@@ -701,11 +732,19 @@ public class QueryGen {
                 " order by" +
                 " s_suppkey;", QueryExecutionMode.SELECT);
 
-        executeQuery( " drop view revenue"+streamId+";",QueryExecutionMode.UPDATE);
+        time += System.currentTimeMillis() - start_time;
+
+        start_time = System.currentTimeMillis();
+
+        executeQuery( "drop view revenue"+streamId+";",QueryExecutionMode.UPDATE);
+
+        time += System.currentTimeMillis() - start_time;
+
+        return time;
 
     }
 
-    public void query16(){
+    public long query16(){
 
         /*  1.  BRAND (arg1) = Brand#MN where M and N are two single character strings representing two numbers randomly and
                 independently selected within [1 .. 5];
@@ -730,7 +769,6 @@ public class QueryGen {
         int arg8 = (rnd.nextInt(50)+1);
         int arg9 = (rnd.nextInt(50)+1);
         int arg10 = (rnd.nextInt(50)+1);
-
 
         String query = "select" +
                 " p_brand," +
@@ -763,11 +801,13 @@ public class QueryGen {
                 " p_type," +
                 " p_size;";
 
+        long start_time = System.currentTimeMillis();
         executeQuery(query,QueryExecutionMode.SELECT);
+        return System.currentTimeMillis()-start_time;
 
     }
 
-    public String query17(){
+    public long query17(){
 
         /*  1.  BRAND = 'Brand#MN' where MN is a two character string representing two
                 numbers randomly and independently selected within [1 .. 5];
@@ -777,7 +817,7 @@ public class QueryGen {
         String arg1 = "Brand#"+(rnd.nextInt(5)+1)+(rnd.nextInt(5)+1);
         String arg2 = getRndContainer();
 
-        return "select" +
+        String query = "select" +
                 " sum(l_extendedprice) / 7.0 as avg_yearly" +
                 " from" +
                 " lineitem," +
@@ -793,30 +833,56 @@ public class QueryGen {
                 " lineitem" +
                 " where" +
                 " l_partkey = p_partkey";
+
+        long start_time = System.currentTimeMillis();
+        executeQuery(query,QueryExecutionMode.SELECT);
+        return System.currentTimeMillis()-start_time;
+
     }
 
-    public void query18(){
+    public long query18(){
 
-        /*  */
+        /*  1.  QUANTITY (arg1) is randomly selected within [312..315].*/
 
-        String arg1 = "199"+(rnd.nextInt(5)+3)+"-01-01" ;
+        int arg1 = rnd.nextInt(4)+312;
 
 
         String query = "select" +
-                " 100.00 * sum(case" +
-                " when p_type like 'PROMO%'" +
-                " then l_extendedprice*(1-l_discount)" +
-                " else 0" +
-                " end) / sum(l_extendedprice * (1 - l_discount)) as promo_revenue" +
+                " c_name," +
+                " c_custkey," +
+                " o_orderkey," +
+                " o_orderdate," +
+                " o_totalprice," +
+                " sum(l_quantity)" +
                 " from" +
-                " lineitem," +
-                " part" +
+                " customer," +
+                " orders," +
+                " lineitem" +
                 " where" +
-                " l_partkey = p_partkey" +
-                " and l_shipdate >= date '"+arg1+"'" +
-                " and l_shipdate < date '"+arg1+"' + interval '1' month;";
+                " o_orderkey in (" +
+                " select" +
+                " l_orderkey" +
+                " from" +
+                " lineitem" +
+                " group by" +
+                " l_orderkey having" +
+                " sum(l_quantity) > " + arg1 +
+                " )" +
+                " and c_custkey = o_custkey" +
+                " and o_orderkey = l_orderkey" +
+                " group by" +
+                " c_name," +
+                " c_custkey," +
+                " o_orderkey," +
+                " o_orderdate," +
+                " o_totalprice" +
+                " order by" +
+                " o_totalprice desc," +
+                " o_orderdate;";
 
+        long start_time = System.currentTimeMillis();
         executeQuery(query,QueryExecutionMode.SELECT);
+        return System.currentTimeMillis()-start_time;
 
     }
 

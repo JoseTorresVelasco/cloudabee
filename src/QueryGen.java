@@ -162,10 +162,19 @@ public class QueryGen {
 
     public long query3(){
 
-        // arg1 must be an integer value between 60 and 120.
+        /*  1. SEGMENT is randomly selected within the list of values defined for Segments;
+            2. DATE is a randomly selected day within [1995-03-01 .. 1995-03-31].*/
         String arg1 = getRndMtksegment();
 
-        String arg2= "1995-03-" + (rnd.nextInt(32)+1);
+        String arg2;
+
+        int day = rnd.nextInt(31)+1;
+
+        if(day<10){
+            arg2= "1995-03-0" + day;
+        }else{
+            arg2= "1995-03-" + day;
+        }
 
         String query =  " select" +
                 " l_orderkey," +
@@ -202,7 +211,22 @@ public class QueryGen {
         /*  1.DATE (arg1) is the first day of a randomly selected month between the first month of 1993
             and the 10th month of 1997.*/
 
-        String arg1= "199"+(rnd.nextInt(5)+3)+"-"+(rnd.nextInt(10)+1)+"-01" ;
+        int y = (rnd.nextInt(5)+3);
+
+        int m = (rnd.nextInt(12)+1);
+
+        if(y==7 && m>10){
+            m=10;
+        }
+
+        String month;
+        if(m<10){
+            month = "0"+m;
+        }else{
+            month = ""+m;
+        }
+
+        String arg1= "199"+y+"-"+month+"-01" ;
 
         String query = "select" +
                 " o_orderpriority," +
@@ -651,7 +675,16 @@ public class QueryGen {
 
         /*  1.  DATE (arg1) is the first day of a month randomly selected from a random year within [1993 .. 1997].*/
 
-        String arg1 = "199"+(rnd.nextInt(5)+3)+"-01-01" ;
+        int m = rnd.nextInt(12)+1;
+        String month;
+
+        if(m<10){
+            month = "0"+m;
+        }else{
+            month =""+m;
+        }
+
+        String arg1 = "199"+(rnd.nextInt(5)+3)+"-"+month+"-01" ;
 
 
         String query = "select" +
@@ -682,12 +715,20 @@ public class QueryGen {
                 the first month of 1993 and the 10th month of 1997.*/
 
         int year = (rnd.nextInt(5)+3);
-        int month;
+        int m;
 
         if(year == 7){
-            month = (rnd.nextInt(10)+1);
+            m = (rnd.nextInt(10)+1);
         }else{
-            month = (rnd.nextInt(12)+1);
+            m = (rnd.nextInt(12)+1);
+        }
+
+        String month;
+
+        if(m<10){
+            month = "0"+m;
+        }else{
+            month =""+m;
         }
 
         String arg1 = "199"+year+"-"+month+"-01" ;

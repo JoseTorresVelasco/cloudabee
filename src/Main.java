@@ -6,7 +6,8 @@ public class Main {
 
     public static void main(String [] args){
 
-        executeNQueries(100);
+        executeNQueries(1000);
+        //executeAllQueries();
     }
 
     public static void executeAllQueries(){
@@ -59,8 +60,8 @@ public class Main {
         System.out.println("Ejecutando query 16");
         System.out.println("\t" + qg.query16() + " milisegundos.");
 
-        System.out.println("Ejecutando query 17");
-        System.out.println("\t" + qg.query17() + " milisegundos.");
+        //System.out.println("Ejecutando query 17");
+        //System.out.println("\t" + qg.query17() + " milisegundos.");
 
         System.out.println("Ejecutando query 18");
         System.out.println("\t" + qg.query18() + " milisegundos.");

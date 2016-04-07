@@ -1,9 +1,10 @@
 CREATE DATABASE  IF NOT EXISTS `tpch` /*!40100 DEFAULT CHARACTER SET utf8 COLLATE utf8_bin */;
 USE `tpch`;
 
-CREATE USER 'tpch'@'localhost' IDENTIFIED BY 'tpch';
-GRANT ALL PRIVILEGES ON tpch.* TO 'tpch'@'localhost'; # La idea es darle solo permisos para la bd tpch
+CREATE USER 'tpch'@'%' IDENTIFIED BY 'tpch';
+GRANT ALL PRIVILEGES ON tpch.* TO 'tpch'@'%'; # La idea es darle solo permisos para la bd tpch
 FLUSH PRIVILEGES;
+
 
 ##############################################################################
 ##Creamos las tablas que conforman la BD completa con sus restricciones.

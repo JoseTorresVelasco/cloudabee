@@ -19,6 +19,7 @@ function advertement {
 }
 
 function checking_tool {
+  sudo apt-get update;
   if ! hash $1 2>/dev/null; then
     echo "Tool $1 needs to be installed";
     sudo apt-get install $1;
@@ -68,9 +69,9 @@ mkdir DATA
 mv *.tbl DATA
 sudo mv DATA /var/lib/mysql/
 
-##Instalación de mysql.
-sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password password jose123'
-sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password jose123'
+##Instalación de mysql.  ------>Estas dos líneas deberían ir justo antes de la instalación de mysql
+#sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password password tpch'
+#sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password tpch'
 
 ##Una vez instalado el servidor, se levanta y se crea un usuario para la BD y la propia BD
 sudo service mysql start

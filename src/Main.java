@@ -6,8 +6,9 @@ public class Main {
 
     public static void main(String [] args){
 
-        executeNQueries(1000);
+        //executeNQueries(1000);
         //executeAllQueries();
+        executeQueryNtimes(18,1);
     }
 
     public static void executeAllQueries(){
@@ -48,8 +49,8 @@ public class Main {
         System.out.println("Ejecutando query 12");
         System.out.println("\t" + qg.query12() + " milisegundos.");
 
-        //System.out.println("Ejecutando query 13");
-        //System.out.println("\t" + qg.query13() + " milisegundos.");
+        System.out.println("Ejecutando query 13");
+        System.out.println("\t" + qg.query13() + " milisegundos.");
 
         System.out.println("Ejecutando query 14");
         System.out.println("\t" + qg.query14() + " milisegundos.");
@@ -60,13 +61,23 @@ public class Main {
         System.out.println("Ejecutando query 16");
         System.out.println("\t" + qg.query16() + " milisegundos.");
 
-        //System.out.println("Ejecutando query 17");
-        //System.out.println("\t" + qg.query17() + " milisegundos.");
+        System.out.println("Ejecutando query 17");
+        System.out.println("\t" + qg.query17() + " milisegundos.");
 
         System.out.println("Ejecutando query 18");
         System.out.println("\t" + qg.query18() + " milisegundos.");
 
+        System.out.println("Ejecutando query 19");
+        System.out.println("\t" + qg.query19() + " milisegundos.");
 
+        System.out.println("Ejecutando query 20");
+        System.out.println("\t" + qg.query20() + " milisegundos.");
+
+        System.out.println("Ejecutando query 21");
+        System.out.println("\t" + qg.query21() + " milisegundos.");
+
+        System.out.println("Ejecutando query 22");
+        System.out.println("\t" + qg.query22() + " milisegundos.");
 
         System.out.println("Fin");
     }
@@ -128,13 +139,13 @@ public class Main {
                 case 15:
                     System.out.println("16 " + qg.query16());
                     break;
-                /*case 16:
+                case 16:
                     System.out.println("17 " + qg.query17());
-                    break;*/
+                    break;
                 case 17:
                     System.out.println("18 " + qg.query18());
                     break;
-                /*case 18:
+                case 18:
                     System.out.println("19 " + qg.query19());
                     break;
                 case 19:
@@ -145,11 +156,87 @@ public class Main {
                     break;
                 case 21:
                     System.out.println("22 " + qg.query22());
-                    break;*/
+                    break;
             }
         }
 
     }
 
+    public static void executeQueryNtimes(int query, int n){
+        for(int i=0;i<n;i++){
+            System.out.println("Ejecutando query " + query + " " + n + " veces");
+
+            System.out.println("Ejecución: " + (i+1) +" Tiempo:");
+
+            switch (query-1){
+                case 0:
+                    System.out.println(qg.query1());
+                    break;
+                case 1:
+                    System.out.println(qg.query2());
+                    break;
+                case 2:
+                    System.out.println(qg.query3());
+                    break;
+                case 3:
+                    System.out.println(qg.query4());
+                    break;
+                case 4:
+                    System.out.println(qg.query5());
+                    break;
+                case 5:
+                    System.out.println(qg.query6());
+                    break;
+                case 6:
+                    System.out.println(qg.query7());
+                    break;
+                case 7:
+                    System.out.println(qg.query8());
+                    break;
+                case 8:
+                    System.out.println(qg.query9());
+                    break;
+                case 9:
+                    System.out.println(qg.query10());
+                    break;
+                case 10:
+                    System.out.println(qg.query11());
+                    break;
+                case 11:
+                    System.out.println(qg.query12());
+                    break;
+                case 12:
+                    System.out.println(qg.query13());
+                    break;
+                case 13:
+                    System.out.println(qg.query14());
+                    break;
+                case 14:
+                    System.out.println(qg.query15());
+                    break;
+                case 15:
+                    System.out.println(qg.query16());
+                    break;
+                case 16:
+                    System.out.println(qg.query17());
+                    break;
+                case 17:
+                    System.out.println(qg.query18());
+                    break;
+                case 18:
+                    System.out.println(qg.query19());
+                    break;
+                case 19:
+                    System.out.println(qg.query20());
+                    break;
+                case 20:
+                    System.out.println(qg.query21());
+                    break;
+                case 21:
+                    System.out.println(qg.query22());
+                    break;
+            }
+        }
+    }
 
 }

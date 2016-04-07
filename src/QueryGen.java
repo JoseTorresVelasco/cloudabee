@@ -1,4 +1,5 @@
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.Random;
 
 enum QueryExecutionMode {SELECT, UPDATE}
@@ -10,6 +11,7 @@ public class QueryGen {
     static final String ENDDATE = "1998-12-31";
     static final int SCALE_FACTOR = 1;
 
+    static final String HOST = "localhost:3306";
     static final String DATABASE_NAME = "tpch";
     static final String USERNAME = "tpch";
     static final String PASSWORD = "tpch";
@@ -49,10 +51,10 @@ public class QueryGen {
     public void connectToBD() {
         try {
             Class.forName("com.mysql.jdbc.Driver");
-            String DB = "jdbc:mysql://localhost/" + DATABASE_NAME + "?user=" + USERNAME + "&password=" + PASSWORD;
+            String DB = "jdbc:mysql://"+HOST+"/" + DATABASE_NAME + "?user=" + USERNAME + "&password=" + PASSWORD;
             setConnection(DriverManager.getConnection(DB));
             if(getConnection() != null){
-                System.out.println("Connection success!");
+                //System.out.println("Connection success!");
             }else{
                 System.out.println("Connection Error!");
             }
@@ -645,8 +647,10 @@ public class QueryGen {
 
 
         String query = "select" +
-                " c_count, count(*) as custdist" +
-                " from (" +
+                " c_count," +
+                " count(*) as custdist" +
+                " from" +
+                " (" +
                 " select" +
                 " c_custkey," +
                 " count(o_orderkey)" +
@@ -656,14 +660,13 @@ public class QueryGen {
                 " and o_comment not like '%"+arg1+"%"+arg2+"%'" +
                 " group by" +
                 " c_custkey" +
-                " )as c_orders (c_custkey, c_count)" +
+                " ) as c_orders (c_custkey, c_count)" +
                 " group by" +
                 " c_count" +
                 " order by" +
                 " custdist desc," +
                 " c_count desc;";
 
-        System.out.println(query);
 
         long start_time = System.currentTimeMillis();
         executeQuery(query,QueryExecutionMode.SELECT);
@@ -873,7 +876,7 @@ public class QueryGen {
                 " from" +
                 " lineitem" +
                 " where" +
-                " l_partkey = p_partkey";
+                " l_partkey = p_partkey);";
 
         long start_time = System.currentTimeMillis();
         executeQuery(query,QueryExecutionMode.SELECT);
@@ -888,13 +891,13 @@ public class QueryGen {
         int arg1 = rnd.nextInt(4)+312;
 
 
-        String query = "select" +
+        String query = "select count(" +
                 " c_name," +
                 " c_custkey," +
                 " o_orderkey," +
                 " o_orderdate," +
                 " o_totalprice," +
-                " sum(l_quantity)" +
+                " sum(l_quantity))" +
                 " from" +
                 " customer," +
                 " orders," +
@@ -920,6 +923,231 @@ public class QueryGen {
                 " order by" +
                 " o_totalprice desc," +
                 " o_orderdate;";
+
+        System.out.println(query);
+
+        long start_time = System.currentTimeMillis();
+        executeQuery(query,QueryExecutionMode.SELECT);
+        return System.currentTimeMillis()-start_time;
+
+    }
+
+    public long query19(){
+
+        /*  1.  QUANTITY1 (arg1) is randomly selected within [1..10].
+            2.  QUANTITY2 (arg2) is randomly selected within [10..20].
+            3.  QUANTITY3 (arg3) is randomly selected within [20..30].
+            4.  BRAND1 (arg4), BRAND2 (arg5), BRAND3 (arg6) = 'Brand#MN' where each MN is a two character
+                string representing two numbers randomly and independently selected
+                within [1 .. 5].*/
+
+        int arg1 = rnd.nextInt(10)+1;
+        int arg2 = rnd.nextInt(11)+10;
+        int arg3 = rnd.nextInt(21)+10;
+        String arg4 = "Brand#"+(rnd.nextInt(5)+1)+""+(rnd.nextInt(5)+1);
+        String arg5 = "Brand#"+(rnd.nextInt(5)+1)+""+(rnd.nextInt(5)+1);
+        String arg6 = "Brand#"+(rnd.nextInt(5)+1)+""+(rnd.nextInt(5)+1);
+
+        String query = "select" +
+                " sum(l_extendedprice * (1 - l_discount) ) as revenue" +
+                " from" +
+                " lineitem," +
+                " part" +
+                " where" +
+                " (" +
+                " p_partkey = l_partkey" +
+                " and p_brand = '"+arg4+"'" +
+                " and p_container in ( 'SM CASE', 'SM BOX', 'SM PACK', 'SM PKG')" +
+                " and l_quantity >= "+arg1+" and l_quantity <= "+arg1+" + 10" +
+                " and p_size between 1 and 5" +
+                " and l_shipmode in ('AIR', 'AIR REG')" +
+                " and l_shipinstruct = 'DELIVER IN PERSON'" +
+                " )" +
+                " or" +
+                " (" +
+                " p_partkey = l_partkey" +
+                " and p_brand = '"+arg5+"'" +
+                " and p_container in ('MED BAG', 'MED BOX', 'MED PKG', 'MED PACK')" +
+                " and l_quantity >= "+arg2+" and l_quantity <= "+arg2+" + 10" +
+                " and p_size between 1 and 10" +
+                " and l_shipmode in ('AIR', 'AIR REG')" +
+                " and l_shipinstruct = 'DELIVER IN PERSON'" +
+                " )" +
+                " or" +
+                " (" +
+                " p_partkey = l_partkey" +
+                " and p_brand = '"+arg6+"'" +
+                " and p_container in ( 'LG CASE', 'LG BOX', 'LG PACK', 'LG PKG')" +
+                " and l_quantity >= "+arg3+" and l_quantity <= "+arg3+" + 10" +
+                " and p_size between 1 and 15" +
+                " and l_shipmode in ('AIR', 'AIR REG')" +
+                " and l_shipinstruct = 'DELIVER IN PERSON'" +
+                " );";
+
+        long start_time = System.currentTimeMillis();
+        executeQuery(query,QueryExecutionMode.SELECT);
+        return System.currentTimeMillis()-start_time;
+
+    }
+
+    public long query20(){
+
+        /*  1.  COLOR (arg1) is randomly selected within the list of values defined for the generation of P_NAME.
+            2.  DATE (arg2) is the first of January of a randomly selected year within 1993..1997.
+            3.  NATION (arg3) is randomly selected within the list of values defined for N_NAME.*/
+
+        String arg1 = getRndColor();
+        String arg2 = "199"+(rnd.nextInt(5)+3)+"-01-01" ;
+        String arg3 = getRndNation();
+
+        String query = "select" +
+                " s_name," +
+                " s_address" +
+                " from" +
+                " supplier, nation" +
+                " where" +
+                " s_suppkey in (" +
+                " select" +
+                " ps_suppkey" +
+                " from" +
+                " partsupp" +
+                " where" +
+                " ps_partkey in (" +
+                " select" +
+                " p_partkey" +
+                " from" +
+                " part" +
+                " where" +
+                " p_name like '"+arg1+"%'" +
+                " )" +
+                " and ps_availqty > (" +
+                " select" +
+                " 0.5 * sum(l_quantity)" +
+                " from" +
+                " lineitem" +
+                " where" +
+                " l_partkey = ps_partkey" +
+                " and l_suppkey = ps_suppkey" +
+                " and l_shipdate >= date('"+arg2+"')" +
+                " and l_shipdate < date('"+arg2+"') + interval '1' year" +
+                " )" +
+                " )" +
+                " and s_nationkey = n_nationkey" +
+                " and n_name = '"+arg3+"'" +
+                " order by" +
+                " s_name;";
+
+        long start_time = System.currentTimeMillis();
+        executeQuery(query,QueryExecutionMode.SELECT);
+        return System.currentTimeMillis()-start_time;
+
+    }
+
+    public long query21(){
+
+        /*  1.  NATION (arg1) is randomly selected within the list of values defined for N_NAME.*/
+
+        String arg1 = getRndNation();
+
+        String query = "select" +
+                " s_name," +
+                " count(*) as numwait" +
+                " from" +
+                " supplier," +
+                " lineitem l1," +
+                " orders," +
+                " nation" +
+                " where" +
+                " s_suppkey = l1.l_suppkey" +
+                " and o_orderkey = l1.l_orderkey" +
+                " and o_orderstatus = 'F'" +
+                " and l1.l_receiptdate > l1.l_commitdate" +
+                " and exists (" +
+                " select" +
+                " *" +
+                " from" +
+                " lineitem l2" +
+                " where" +
+                " l2.l_orderkey = l1.l_orderkey" +
+                " and l2.l_suppkey <> l1.l_suppkey" +
+                " )" +
+                " and not exists (" +
+                " select" +
+                " *" +
+                " from" +
+                " lineitem l3" +
+                " where" +
+                " l3.l_orderkey = l1.l_orderkey" +
+                " and l3.l_suppkey <> l1.l_suppkey" +
+                " and l3.l_receiptdate > l3.l_commitdate" +
+                " )" +
+                " and s_nationkey = n_nationkey" +
+                " and n_name = '"+arg1+"'" +
+                " group by" +
+                " s_name" +
+                " order by" +
+                " numwait desc," +
+                " s_name;";
+
+        long start_time = System.currentTimeMillis();
+        executeQuery(query,QueryExecutionMode.SELECT);
+        return System.currentTimeMillis()-start_time;
+
+    }
+
+    public long query22(){
+
+        /*  1.  I1 ... I7 are randomly selected without repetition from the
+                possible values for Country code.*/
+
+        ArrayList<Integer> list = new ArrayList<>();
+        int cCod;
+
+        for (int i=0;i<7;i++){
+            do {
+                cCod = rnd.nextInt(25)+10;
+            }while(list.contains(cCod));
+
+            list.add(cCod);
+        }
+
+
+        String query = "select" +
+                " cntrycode," +
+                " count(*) as numcust," +
+                " sum(c_acctbal) as totacctbal" +
+                " from (" +
+                " select" +
+                " substring(c_phone from 1 for 2) as cntrycode," +
+                " c_acctbal" +
+                " from" +
+                " customer" +
+                " where" +
+                " substring(c_phone from 1 for 2) in" +
+                " ('"+list.get(0)+"','"+list.get(1)+"','"+list.get(2)+"','"+list.get(3)+"','"+list.get(4)+"','"+list.get(5)+"','"+list.get(6)+"')" +
+                " and c_acctbal > (" +
+                " select" +
+                " avg(c_acctbal)" +
+                " from" +
+                " customer" +
+                " where" +
+                " c_acctbal > 0.00" +
+                " and substring(c_phone from 1 for 2) in" +
+                " ('"+list.get(0)+"','"+list.get(1)+"','"+list.get(2)+"','"+list.get(3)+"','"+list.get(4)+"','"+list.get(5)+"','"+list.get(6)+"')" +
+                " )" +
+                " and not exists (" +
+                " select" +
+                " *" +
+                " from" +
+                " orders" +
+                " where" +
+                " o_custkey = c_custkey" +
+                " )" +
+                " ) as custsale" +
+                " group by" +
+                " cntrycode" +
+                " order by" +
+                " cntrycode;";
 
         long start_time = System.currentTimeMillis();
         executeQuery(query,QueryExecutionMode.SELECT);

@@ -6,6 +6,7 @@ target/
 .metadata
 .settings/
 /bin/
+/src/META-INF/MANIFEST.MF
 /out
 *.zip
 !**/phpHelloWorld.zip

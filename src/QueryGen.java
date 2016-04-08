@@ -6,6 +6,7 @@ import java.util.Random;
 
 enum QueryExecutionMode {SELECT, UPDATE}
 
+//
 public class QueryGen {
 
     static final String STARTDATE = "1992-01-01";
@@ -22,8 +23,16 @@ public class QueryGen {
 
     private Random rnd;
     private Connection connection;
+    private String host;
+
+    public QueryGen(String host){
+        this.host = host;
+        rnd = new Random();
+        connectToBD();
+    }
 
     public QueryGen(){
+        this.host = HOST;
         rnd = new Random();
         connectToBD();
     }
@@ -80,7 +89,8 @@ public class QueryGen {
     public void connectToBD() {
         try {
             Class.forName("com.mysql.jdbc.Driver");
-            String DB = "jdbc:mysql://"+HOST+"/" + DATABASE_NAME + "?user=" + USERNAME + "&password=" + PASSWORD;
+
+            String DB = "jdbc:mysql://"+host+"/" + DATABASE_NAME + "?user=" + USERNAME + "&password=" + PASSWORD;
             setConnection(DriverManager.getConnection(DB));
             if(getConnection() != null){
                 //System.out.println("Connection success!");

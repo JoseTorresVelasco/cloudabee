@@ -2,9 +2,15 @@ import java.util.Random;
 
 public class Main {
 
-    private static QueryGen qg = new QueryGen();
+    private static QueryGen qg;
 
     public static void main(String [] args){
+
+        if(args[0] == null){
+            qg = new QueryGen();
+        }else{
+            qg = new QueryGen(args[0]);
+        }
 
         executeNQueries(1000);
         //executeAllQueries();

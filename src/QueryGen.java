@@ -1,3 +1,5 @@
+import com.mysql.jdbc.exceptions.MySQLTimeoutException;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Random;
@@ -16,6 +18,8 @@ public class QueryGen {
     static final String USERNAME = "tpch";
     static final String PASSWORD = "tpch";
 
+    static final int QUERY_TIMEOUT_MILLIS = 1200;
+
     private Random rnd;
     private Connection connection;
 
@@ -24,26 +28,51 @@ public class QueryGen {
         connectToBD();
     }
 
+    public void closeConnection(){
+        if(connection != null){
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
-    public boolean executeQuery(String query, QueryExecutionMode mode){
+    public boolean executeQuery(String query, QueryExecutionMode mode) throws MySQLTimeoutException {
+
+        Statement stm = null;
+
         try {
+            Connection con = getConnection();
 
-            Statement stm = getConnection().createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
+            stm = con.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
+            //Limit 20 minutes.
+            stm.setQueryTimeout(QUERY_TIMEOUT_MILLIS);
+
             if(mode == QueryExecutionMode.SELECT) {
                 ResultSet rs = stm.executeQuery(query);
-
-                //System.out.println(rs.getFetchSize() + " row(s) returned");
-                //TODO: Print row returned don't works
             }else{
                 stm.execute(query);
             }
             stm.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
+        }catch (SQLException e) {
+
+            if(e instanceof MySQLTimeoutException){
+                if(stm != null){
+                    try {
+                        stm.close();
+                        throw new MySQLTimeoutException();
+                    } catch (SQLException e1) {
+                        e1.printStackTrace();
+                    }
+                }
+
+            }else {
+                e.printStackTrace();
+            }
             return false;
         }
 
-        //TODO: Write execution time.
 
         return true;
     }
@@ -99,7 +128,11 @@ public class QueryGen {
                 " l_linestatus;";
 
         long start_time = System.currentTimeMillis();
-        executeQuery(query,QueryExecutionMode.SELECT);
+        try {
+            executeQuery(query,QueryExecutionMode.SELECT);
+        } catch (MySQLTimeoutException e) {
+            return (-1);
+        }
         return System.currentTimeMillis()-start_time;
     }
 
@@ -158,7 +191,11 @@ public class QueryGen {
                 " s_name," +
                 " p_partkey;";
         long start_time = System.currentTimeMillis();
-        executeQuery(query,QueryExecutionMode.SELECT);
+        try {
+            executeQuery(query,QueryExecutionMode.SELECT);
+        } catch (MySQLTimeoutException e) {
+            return (-1);
+        }
         return System.currentTimeMillis()-start_time;
     }
 
@@ -202,7 +239,11 @@ public class QueryGen {
                 " o_orderdate;";
 
         long start_time = System.currentTimeMillis();
-        executeQuery(query,QueryExecutionMode.SELECT);
+        try {
+            executeQuery(query,QueryExecutionMode.SELECT);
+        } catch (MySQLTimeoutException e) {
+            return (-1);
+        }
         return System.currentTimeMillis()-start_time;
     }
 
@@ -253,7 +294,11 @@ public class QueryGen {
                 " o_orderpriority;";
 
         long start_time = System.currentTimeMillis();
-        executeQuery(query,QueryExecutionMode.SELECT);
+        try {
+            executeQuery(query,QueryExecutionMode.SELECT);
+        } catch (MySQLTimeoutException e) {
+            return (-1);
+        }
         return System.currentTimeMillis()-start_time;
     }
 
@@ -291,7 +336,11 @@ public class QueryGen {
                 " order by" +
                 " revenue desc;";
         long start_time = System.currentTimeMillis();
-        executeQuery(query,QueryExecutionMode.SELECT);
+        try {
+            executeQuery(query,QueryExecutionMode.SELECT);
+        } catch (MySQLTimeoutException e) {
+            return (-1);
+        }
         return System.currentTimeMillis()-start_time;
 
     }
@@ -319,7 +368,11 @@ public class QueryGen {
                 " and l_quantity < "+arg3+";";
 
         long start_time = System.currentTimeMillis();
-        executeQuery(query,QueryExecutionMode.SELECT);
+        try {
+            executeQuery(query,QueryExecutionMode.SELECT);
+        } catch (MySQLTimeoutException e) {
+            return (-1);
+        }
         return System.currentTimeMillis()-start_time;
 
     }
@@ -372,7 +425,11 @@ public class QueryGen {
                 " l_year;";
 
         long start_time = System.currentTimeMillis();
-        executeQuery(query,QueryExecutionMode.SELECT);
+        try {
+            executeQuery(query,QueryExecutionMode.SELECT);
+        } catch (MySQLTimeoutException e) {
+            return (-1);
+        }
         return System.currentTimeMillis()-start_time;
 
     }
@@ -428,7 +485,11 @@ public class QueryGen {
                 " o_year;";
 
         long start_time = System.currentTimeMillis();
-        executeQuery(query,QueryExecutionMode.SELECT);
+        try {
+            executeQuery(query,QueryExecutionMode.SELECT);
+        } catch (MySQLTimeoutException e) {
+            return (-1);
+        }
         return System.currentTimeMillis()-start_time;
 
     }
@@ -472,7 +533,11 @@ public class QueryGen {
                 " nation," +
                 " o_year desc;";
         long start_time = System.currentTimeMillis();
-        executeQuery(query,QueryExecutionMode.SELECT);
+        try {
+            executeQuery(query,QueryExecutionMode.SELECT);
+        } catch (MySQLTimeoutException e) {
+            e.printStackTrace();
+        }
         return System.currentTimeMillis()-start_time;
 
     }
@@ -495,7 +560,6 @@ public class QueryGen {
 
         String arg1;
 
-        //TODO: Repeat this for every date arguments.
         if(month<10){
             arg1 = "199"+year+"-0"+month+"-01" ;
         }else{
@@ -534,7 +598,11 @@ public class QueryGen {
                 " order by" +
                 " revenue desc;";
         long start_time = System.currentTimeMillis();
-        executeQuery(query,QueryExecutionMode.SELECT);
+        try {
+            executeQuery(query,QueryExecutionMode.SELECT);
+        } catch (MySQLTimeoutException e) {
+            return (-1);
+        }
         return System.currentTimeMillis()-start_time;
 
     }
@@ -578,7 +646,11 @@ public class QueryGen {
                 " value desc;";
 
         long start_time = System.currentTimeMillis();
-        executeQuery(query,QueryExecutionMode.SELECT);
+        try {
+            executeQuery(query,QueryExecutionMode.SELECT);
+        } catch (MySQLTimeoutException e) {
+            return (-1);
+        }
         return System.currentTimeMillis()-start_time;
 
     }
@@ -628,7 +700,11 @@ public class QueryGen {
                 " l_shipmode;";
 
         long start_time = System.currentTimeMillis();
-        executeQuery(query,QueryExecutionMode.SELECT);
+        try {
+            executeQuery(query,QueryExecutionMode.SELECT);
+        } catch (MySQLTimeoutException e) {
+            return (-1);
+        }
         return System.currentTimeMillis()-start_time;
 
     }
@@ -669,7 +745,11 @@ public class QueryGen {
 
 
         long start_time = System.currentTimeMillis();
-        executeQuery(query,QueryExecutionMode.SELECT);
+        try {
+            executeQuery(query,QueryExecutionMode.SELECT);
+        } catch (MySQLTimeoutException e) {
+            return (-1);
+        }
         return System.currentTimeMillis()-start_time;
 
     }
@@ -705,7 +785,11 @@ public class QueryGen {
                 " and l_shipdate < date '"+arg1+"' + interval '1' month;";
 
         long start_time = System.currentTimeMillis();
-        executeQuery(query,QueryExecutionMode.SELECT);
+        try {
+            executeQuery(query,QueryExecutionMode.SELECT);
+        } catch (MySQLTimeoutException e) {
+            return (-1);
+        }
         return System.currentTimeMillis()-start_time;
 
     }
@@ -739,49 +823,51 @@ public class QueryGen {
         int streamId = rnd.nextInt(200);
 
         long start_time = System.currentTimeMillis();
+        try {
+            executeQuery(" create view revenue" + streamId + " (supplier_no, total_revenue) as" +
+                    " select" +
+                    " l_suppkey," +
+                    " sum(l_extendedprice * (1 - l_discount))" +
+                    " from" +
+                    " lineitem" +
+                    " where" +
+                    " l_shipdate >= date '" + arg1 + "'" +
+                    " and l_shipdate < date '" + arg1 + "' + interval '3' month" +
+                    " group by" +
+                    " l_suppkey;", QueryExecutionMode.UPDATE);
 
-        executeQuery(" create view revenue"+streamId+" (supplier_no, total_revenue) as" +
-                " select" +
-                " l_suppkey," +
-                " sum(l_extendedprice * (1 - l_discount))" +
-                " from" +
-                " lineitem" +
-                " where" +
-                " l_shipdate >= date '"+arg1+"'" +
-                " and l_shipdate < date '"+arg1+"' + interval '3' month" +
-                " group by" +
-                " l_suppkey;", QueryExecutionMode.UPDATE);
+            time += System.currentTimeMillis() - start_time;
 
-        time += System.currentTimeMillis() - start_time;
+            start_time = System.currentTimeMillis();
 
-        start_time = System.currentTimeMillis();
+            executeQuery(" select" +
+                    " s_suppkey," +
+                    " s_name," +
+                    " s_address," +
+                    " s_phone," +
+                    " total_revenue" +
+                    " from" +
+                    " supplier," +
+                    " revenue" + streamId +
+                    " where" +
+                    " s_suppkey = supplier_no" +
+                    " and total_revenue = (" +
+                    " select" +
+                    " max(total_revenue)" +
+                    " from" +
+                    " revenue" + streamId + "" +
+                    " )" +
+                    " order by" +
+                    " s_suppkey;", QueryExecutionMode.SELECT);
 
-        executeQuery(" select" +
-                " s_suppkey," +
-                " s_name," +
-                " s_address," +
-                " s_phone," +
-                " total_revenue" +
-                " from" +
-                " supplier," +
-                " revenue"+streamId+
-                " where" +
-                " s_suppkey = supplier_no" +
-                " and total_revenue = (" +
-                " select" +
-                " max(total_revenue)" +
-                " from" +
-                " revenue"+streamId+"" +
-                " )" +
-                " order by" +
-                " s_suppkey;", QueryExecutionMode.SELECT);
+            time += System.currentTimeMillis() - start_time;
 
-        time += System.currentTimeMillis() - start_time;
+            start_time = System.currentTimeMillis();
 
-        start_time = System.currentTimeMillis();
-
-        executeQuery( "drop view revenue"+streamId+";",QueryExecutionMode.UPDATE);
-
+            executeQuery("drop view revenue" + streamId + ";", QueryExecutionMode.UPDATE);
+        }catch (MySQLTimeoutException e){
+            return (-1);
+        }
         time += System.currentTimeMillis() - start_time;
 
         return time;
@@ -846,7 +932,11 @@ public class QueryGen {
                 " p_size;";
 
         long start_time = System.currentTimeMillis();
-        executeQuery(query,QueryExecutionMode.SELECT);
+        try {
+            executeQuery(query,QueryExecutionMode.SELECT);
+        } catch (MySQLTimeoutException e) {
+            return (-1);
+        }
         return System.currentTimeMillis()-start_time;
 
     }
@@ -879,7 +969,11 @@ public class QueryGen {
                 " l_partkey = p_partkey);";
 
         long start_time = System.currentTimeMillis();
-        executeQuery(query,QueryExecutionMode.SELECT);
+        try {
+            executeQuery(query,QueryExecutionMode.SELECT);
+        } catch (MySQLTimeoutException e) {
+            return (-1);
+        }
         return System.currentTimeMillis()-start_time;
 
     }
@@ -891,13 +985,13 @@ public class QueryGen {
         int arg1 = rnd.nextInt(4)+312;
 
 
-        String query = "select count(" +
+        String query = "select " +
                 " c_name," +
                 " c_custkey," +
                 " o_orderkey," +
                 " o_orderdate," +
                 " o_totalprice," +
-                " sum(l_quantity))" +
+                " sum(l_quantity)" +
                 " from" +
                 " customer," +
                 " orders," +
@@ -924,10 +1018,12 @@ public class QueryGen {
                 " o_totalprice desc," +
                 " o_orderdate;";
 
-        System.out.println(query);
-
         long start_time = System.currentTimeMillis();
-        executeQuery(query,QueryExecutionMode.SELECT);
+        try {
+            executeQuery(query,QueryExecutionMode.SELECT);
+        } catch (MySQLTimeoutException e) {
+            return (-1);
+        }
         return System.currentTimeMillis()-start_time;
 
     }
@@ -985,7 +1081,11 @@ public class QueryGen {
                 " );";
 
         long start_time = System.currentTimeMillis();
-        executeQuery(query,QueryExecutionMode.SELECT);
+        try {
+            executeQuery(query,QueryExecutionMode.SELECT);
+        } catch (MySQLTimeoutException e) {
+            return (-1);
+        }
         return System.currentTimeMillis()-start_time;
 
     }
@@ -1038,7 +1138,11 @@ public class QueryGen {
                 " s_name;";
 
         long start_time = System.currentTimeMillis();
-        executeQuery(query,QueryExecutionMode.SELECT);
+        try {
+            executeQuery(query,QueryExecutionMode.SELECT);
+        } catch (MySQLTimeoutException e) {
+            return (-1);
+        }
         return System.currentTimeMillis()-start_time;
 
     }
@@ -1090,7 +1194,11 @@ public class QueryGen {
                 " s_name;";
 
         long start_time = System.currentTimeMillis();
-        executeQuery(query,QueryExecutionMode.SELECT);
+        try {
+            executeQuery(query,QueryExecutionMode.SELECT);
+        } catch (MySQLTimeoutException e) {
+            return (-1);
+        }
         return System.currentTimeMillis()-start_time;
 
     }
@@ -1150,7 +1258,11 @@ public class QueryGen {
                 " cntrycode;";
 
         long start_time = System.currentTimeMillis();
-        executeQuery(query,QueryExecutionMode.SELECT);
+        try {
+            executeQuery(query,QueryExecutionMode.SELECT);
+        } catch (MySQLTimeoutException e) {
+            return (-1);
+        }
         return System.currentTimeMillis()-start_time;
 
     }

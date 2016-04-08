@@ -6,9 +6,11 @@ public class Main {
 
     public static void main(String [] args){
 
-        //executeNQueries(1000);
+        executeNQueries(1000);
         //executeAllQueries();
-        executeQueryNtimes(18,1);
+        //executeQueryNtimes(18,1);
+
+        qg.closeConnection();
     }
 
     public static void executeAllQueries(){

@@ -6,6 +6,7 @@ import java.util.Random;
 
 enum QueryExecutionMode {SELECT, UPDATE}
 
+
 public class QueryGen {
 
     static final String STARTDATE = "1992-01-01";
@@ -22,8 +23,16 @@ public class QueryGen {
 
     private Random rnd;
     private Connection connection;
+    private String host;
+
+    public QueryGen(String host){
+        this.host = host;
+        rnd = new Random();
+        connectToBD();
+    }
 
     public QueryGen(){
+        this.host = HOST;
         rnd = new Random();
         connectToBD();
     }
@@ -80,7 +89,8 @@ public class QueryGen {
     public void connectToBD() {
         try {
             Class.forName("com.mysql.jdbc.Driver");
-            String DB = "jdbc:mysql://"+HOST+"/" + DATABASE_NAME + "?user=" + USERNAME + "&password=" + PASSWORD;
+
+            String DB = "jdbc:mysql://"+host+"/" + DATABASE_NAME + "?user=" + USERNAME + "&password=" + PASSWORD;
             setConnection(DriverManager.getConnection(DB));
             if(getConnection() != null){
                 //System.out.println("Connection success!");
@@ -662,7 +672,7 @@ public class QueryGen {
                 different from the value selected for SHIPMODE1 in item 1;
             3.  DATE (arg3) is the first of January of a randomly selected year within [1993 .. 1997].*/
 
-        String arg1 = getRndShipMode();
+        /*String arg1 = getRndShipMode();
         String arg2= getRndShipMode();
         while(arg1.equals(arg2)){
             arg2= getRndShipMode();
@@ -706,7 +716,9 @@ public class QueryGen {
             return (-1);
         }
         return System.currentTimeMillis()-start_time;
+        */
 
+        return -2;
     }
 
     public long query13(){

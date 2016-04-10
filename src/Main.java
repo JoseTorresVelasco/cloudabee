@@ -1,10 +1,19 @@
 import java.util.Random;
 
+enum QueryType {CL, CM, CH}
+
 public class Main {
 
-    private static QueryGen qg = new QueryGen();
+    private static QueryGen qg;
 
     public static void main(String [] args){
+
+        executeNRandomQueries(1000);
+        if(args[0] == null){
+            qg = new QueryGen();
+        }else{
+            qg = new QueryGen(args[0]);
+        }
 
         executeNRandomQueries(1000);
         //executeAllQueries();
@@ -91,7 +100,7 @@ public class Main {
      * Executes randomly a number of queries introduced by nQueries parameter,
      * using a normal distribution to select every query.
      *
-     * @param nQueries
+     * @param nQueries Number of queries to execute.
      */
     public static void executeNRandomQueries(int nQueries) {
 
@@ -196,14 +205,14 @@ public class Main {
      *
      * The allowed types of queries are CL, CM and CH.
      *
-     * @param type
+     * @param type Type of query {CL, CM, CH}
      */
     public static void executeRandomQueryOfType(QueryType type){
 
         Random rnd = new Random();
         int queryNum;
 
-        switch (type){
+        switch (type) {
             case CL:
                 queryNum = rnd.nextInt(9);
 
@@ -239,7 +248,7 @@ public class Main {
             case CM:
                 queryNum = rnd.nextInt(4);
 
-                switch (queryNum){
+                switch (queryNum) {
                     case 0:
                         System.out.println("8 " + qg.query8());
                         break;
@@ -257,7 +266,7 @@ public class Main {
             case CH:
                 queryNum = rnd.nextInt(9);
 
-                switch (queryNum){
+                switch (queryNum) {
                     case 0:
                         System.out.println("1 " + qg.query1());
                         break;
@@ -297,8 +306,8 @@ public class Main {
      *
      * Allowed types of queries are CL, CM and CH.
      *
-     * @param nQueries
-     * @param type
+     * @param nQueries Number of queries to execute.
+     * @param type Type of queries to execute {CL, CM, CH}
      */
     public static void executeNSameTypeQueries(int nQueries, QueryType type){
         for(int i=0;i<nQueries;i++){
@@ -311,7 +320,7 @@ public class Main {
      * specified by n parameter.
      *
      * @param query Queries 1 to 22.
-     * @param n
+     * @param n Times to execute query.
      */
     public static void executeQueryNtimes(int query, int n){
         for(int i=0;i<n;i++){

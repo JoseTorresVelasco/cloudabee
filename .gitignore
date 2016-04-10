@@ -1,3 +1,4 @@
+/mysql-connector-java-5.1.38.zip
 .idea/
 *.iml
 target/
@@ -17,4 +18,5 @@ target/
 release.properties
 pom.xml.*
 .DS_Store
+/mysql-connector-java-5.1.38
 **/*.swp

@@ -8,19 +8,104 @@ public class Main {
 
     public static void main(String [] args){
 
-        executeNRandomQueries(1000);
-        if(args[0] == null){
-            qg = new QueryGen();
+        int base = 0;
+        boolean cont = true;
+
+        if(args.length == 0){
+            System.err.println("Error! Must select an option.\n"+
+                                "Use -info to know more.");
+            cont = false;
+        }else if(args[0].equals("-host")){
+            if(args.length<3){
+                System.err.println("Error! Must select an option.");
+                cont = false;
+            }else {
+                qg = new QueryGen(args[1]);
+                base = 2;
+            }
         }else{
-            qg = new QueryGen(args[0]);
+                qg = new QueryGen();
         }
 
-        executeNRandomQueries(1000);
-        //executeAllQueries();
-        //executeQueryNtimes(18,1);
 
-        qg.closeConnection();
+        if(cont) {
+            String type;
+            int times;
+
+            switch (args[base]) {
+                case "-all":
+                    executeAllQueries();
+                    break;
+                case "-nrandom":
+                    int nQueries = Integer.parseInt(args[base]);
+                    executeNRandomQueries(nQueries);
+                    break;
+                case "-repeatquery":
+                    int query = Integer.parseInt(args[base]);
+                    times = Integer.parseInt(args[base + 1]);
+                    executeQueryNtimes(query, times);
+                    break;
+                case "-randomtype":
+
+                    type = args[base];
+
+                    try {
+                        executeRandomQueryOfType(parseType(type));
+                    } catch (Exception e) {
+                        System.err.println(e.getMessage());
+                    }
+
+
+                    break;
+                case "-nrandomtype":
+
+                    times = Integer.parseInt(args[base]);
+
+                    try {
+                        executeNSameTypeQueries(times, parseType(args[base + 1]));
+                    } catch (Exception e) {
+                        System.err.println(e.getMessage());
+                    }
+                    break;
+                case "-info":
+
+                    String info = "\n\nCloudabee client allow the followings options:\n\n" +
+                            "\t-all: Executes every TPC-H query one by one.\n\n" +
+                            "\t-nrandom <number of queries>: Executes randomly a " +
+                            "number of queries \n\tintroduced by nQueries parameter, " +
+                            "using a normal distribution \n\tto select every query.\n\n" +
+                            "\t-repeatquery <query><times>: Executes the same query, specified\n" +
+                            "\tby query parameter a number of times specified by n " +
+                            "parameter.\n\n" +
+                            "\t-randomtype <type>: Executes randomly a query of type " +
+                            "specified by \n\ttype parameter, using a " +
+                            "normal distribution to generate the query.\n" +
+                            "\tThe allowed types of queries are CL, CM and CH.\n\n" +
+                            "\t-nrandomtype <times><type>: Executes randomly a number " +
+                            "of queries of \n\tthe same type specified by " +
+                            "nQueries parameter and type parameter.\n" +
+                            "\tAllowed types of queries are CL, CM and CH.\n\n";
+
+                    System.out.print(info);
+                    break;
+            }
+            qg.closeConnection();
+        }
+
     }
+
+    private static QueryType parseType(String type) throws Exception {
+        if (type.equals("CL")){
+            return QueryType.CL;
+        }else if(type.equals("CM")){
+            return QueryType.CM;
+        }else if(type.equals("CH")){
+            return QueryType.CH;
+        }else{
+            throw(new Exception("Error! Query type not valid."));
+        }
+    }
+
 
     /**
      * Executes every query one by one.
